@@ -6,8 +6,19 @@
  *   - An error, if any (nullable)
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
-const fetchMyIP = function(callback) { 
+const request = require('request');
+
+const fetchMyIP = function(callback) {
   // use request to fetch IP address from JSON API
-}
+  request('https://api.ipify.org?format=json', (error, response, body) => {
+    if (error) return callback(error, null);
+
+    if (response.statusCode !== 200) {
+      return callback(Error(`Status Code ${response.statusCode} when fetching IP: ${body}`), null);
+    }
+
+    callback(null, JSON.parse(body).ip);
+  });
+};
 
 module.exports = { fetchMyIP };
