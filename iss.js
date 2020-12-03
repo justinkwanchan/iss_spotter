@@ -14,11 +14,23 @@ const fetchMyIP = function(callback) {
     if (error) return callback(error, null);
 
     if (response.statusCode !== 200) {
-      return callback(Error(`Status Code ${response.statusCode} when fetching IP: ${body}`), null);
+      return callback(Error(`Status Code ${response.statusCode} when fetching coordinates for IP: ${body}`), null);
     }
 
     callback(null, JSON.parse(body).ip);
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function(ip, callback) {
+  request('https://freegeoip.app/json/', (error, response, body) => {
+    if (error) return callback(error, null);
+
+    if (response.statusCode !== 200) {
+      return callback(Error(`Status Code ${response.statusCode} when fetching IP: ${body}`), null);
+    }
+    const { latitude, longitude } = JSON.parse(body);
+    callback(null, { latitude, longitude });
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
